@@ -63,6 +63,48 @@ make docker-build IMAGE=ghcr.io/<your-org>/pxobj:<tag>
 
 ## 5A. Install With Helm
 
+### 5A.1 Use Prebuilt Chart From GHCR (Recommended)
+
+`pxobj` publishes Helm chart artifacts to GHCR OCI:
+- `oci://ghcr.io/mchenetz/charts/pxobj`
+
+Authenticate to GHCR:
+
+```bash
+echo <GITHUB_TOKEN> | helm registry login ghcr.io -u <GITHUB_USERNAME> --password-stdin
+```
+
+Install operator only:
+
+```bash
+helm upgrade --install pxobj oci://ghcr.io/mchenetz/charts/pxobj \
+  --version 0.1.0 \
+  --namespace pxobj-system --create-namespace
+```
+
+Install operator + ObjectService + COSI classes:
+
+```bash
+helm upgrade --install pxobj oci://ghcr.io/mchenetz/charts/pxobj \
+  --version 0.1.0 \
+  --namespace pxobj-system --create-namespace \
+  --set image.repository=ghcr.io/mchenetz/pxobj \
+  --set image.tag=latest \
+  --set objectService.create=true \
+  --set objectService.storageClassName=px-repl3 \
+  --set cosi.createClasses=true
+```
+
+Optional: pull chart locally first:
+
+```bash
+helm pull oci://ghcr.io/mchenetz/charts/pxobj --version 0.1.0
+tar -xzf pxobj-0.1.0.tgz
+helm upgrade --install pxobj ./pxobj --namespace pxobj-system --create-namespace
+```
+
+### 5A.2 Use Local Chart From Repo
+
 Operator only (recommended first):
 
 ```bash

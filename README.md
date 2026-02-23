@@ -1,4 +1,4 @@
-# pxobj
+# pobj
 
 `pxobj` is a full custom COSI-compliant S3 object service for Kubernetes, implemented without MinIO.
 

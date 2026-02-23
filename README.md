@@ -36,7 +36,7 @@ Helm chart:
   - HTTPS for S3/Admin APIs
   - mTLS enforcement on intra-cluster replication endpoints
 
-## Portworx usage
+## Usage
 
 Set `spec.storageClassName` in `ObjectService` to your StorageClass (example: `px-repl3`).
 Every object server pod uses a dedicated PVC from that class.

@@ -1,0 +1,23 @@
+{{- if .Values.objectService.create }}
+apiVersion: pxobj.io/v1alpha1
+kind: ObjectService
+metadata:
+  name: {{ .Values.objectService.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.objectService.replicas }}
+  storageClassName: {{ required "objectService.storageClassName is required when objectService.create=true" .Values.objectService.storageClassName | quote }}
+  volumeSize: {{ .Values.objectService.volumeSize | quote }}
+  serviceType: {{ .Values.objectService.serviceType | quote }}
+  port: {{ .Values.objectService.port }}
+  dataPath: {{ .Values.objectService.dataPath | quote }}
+  {{- if .Values.objectService.tlsSecretName }}
+  tlsSecretName: {{ .Values.objectService.tlsSecretName | quote }}
+  {{- end }}
+  useCertManager: {{ .Values.objectService.useCertManager }}
+  {{- if .Values.objectService.issuerRefName }}
+  issuerRefName: {{ .Values.objectService.issuerRefName | quote }}
+  issuerRefKind: {{ .Values.objectService.issuerRefKind | quote }}
+  issuerRefGroup: {{ .Values.objectService.issuerRefGroup | quote }}
+  {{- end }}
+{{- end }}

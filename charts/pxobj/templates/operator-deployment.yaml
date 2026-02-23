@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "pxobj.fullname" . }}-operator
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.operator.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "pxobj.fullname" . }}-operator
+  template:
+    metadata:
+      labels:
+        app: {{ include "pxobj.fullname" . }}-operator
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.operator }}
+      containers:
+      - name: operator
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["/pxobj-operator"]
+        env:
+        - name: PXOBJ_IMAGE
+          value: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        ports:
+        - containerPort: 8080
+          name: metrics
+        - containerPort: 8081
+          name: probes
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: probes
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: probes
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+{{ toYaml .Values.operator.resources | indent 10 }}
+      nodeSelector:
+{{ toYaml .Values.operator.nodeSelector | indent 8 }}
+      tolerations:
+{{ toYaml .Values.operator.tolerations | indent 8 }}
+      affinity:
+{{ toYaml .Values.operator.affinity | indent 8 }}

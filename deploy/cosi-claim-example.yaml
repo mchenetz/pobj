@@ -1,0 +1,20 @@
+apiVersion: objectstorage.k8s.io/v1alpha1
+kind: BucketClaim
+metadata:
+  name: app-bucket
+  namespace: default
+spec:
+  bucketClassName: pxobj-s3
+  protocols:
+  - S3
+---
+apiVersion: objectstorage.k8s.io/v1alpha1
+kind: BucketAccess
+metadata:
+  name: app-bucket-access
+  namespace: default
+spec:
+  bucketClaimName: app-bucket
+  bucketAccessClassName: pxobj-s3-access
+  credentialsSecretName: app-bucket-credentials
+  protocol: S3

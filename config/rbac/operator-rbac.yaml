@@ -1,0 +1,82 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pxobj-operator
+  namespace: pxobj-system
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pxobj-cosi-driver
+  namespace: pxobj-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pxobj-operator
+rules:
+- apiGroups: ["pxobj.io"]
+  resources: ["objectservices"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["pxobj.io"]
+  resources: ["objectservices/status", "objectservices/finalizers"]
+  verbs: ["get", "update", "patch"]
+- apiGroups: [""]
+  resources: ["services", "secrets", "persistentvolumeclaims"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["apps"]
+  resources: ["statefulsets", "deployments"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["cert-manager.io"]
+  resources: ["certificates"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: [""]
+  resources: ["events", "pods"]
+  verbs: ["get", "list", "watch", "create", "patch", "update"]
+- apiGroups: ["coordination.k8s.io"]
+  resources: ["leases"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pxobj-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pxobj-operator
+subjects:
+- kind: ServiceAccount
+  name: pxobj-operator
+  namespace: pxobj-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pxobj-cosi-driver
+rules:
+- apiGroups: ["objectstorage.k8s.io"]
+  resources: ["buckets", "bucketclaims", "bucketclasses", "bucketaccesses", "bucketaccessclasses"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["objectstorage.k8s.io"]
+  resources: ["buckets/status", "bucketclaims/status", "bucketaccesses/status"]
+  verbs: ["get", "update", "patch"]
+- apiGroups: [""]
+  resources: ["secrets", "events"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["coordination.k8s.io"]
+  resources: ["leases"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pxobj-cosi-driver
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pxobj-cosi-driver
+subjects:
+- kind: ServiceAccount
+  name: pxobj-cosi-driver
+  namespace: pxobj-system

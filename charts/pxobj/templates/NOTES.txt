@@ -1,0 +1,13 @@
+pxobj has been installed.
+
+Next steps:
+1. Verify operator:
+   kubectl -n {{ .Release.Namespace }} get deploy {{ include "pxobj.fullname" . }}-operator
+
+2. If objectService.create=false, create an ObjectService manually.
+
+3. If cosi.createClasses=false, create BucketClass and BucketAccessClass manually.
+
+4. Check all resources:
+   kubectl get objectservice -A
+   kubectl get bucketclaims,buckets,bucketaccesses -A

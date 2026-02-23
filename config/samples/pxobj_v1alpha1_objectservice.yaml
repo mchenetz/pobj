@@ -1,0 +1,19 @@
+apiVersion: pxobj.io/v1alpha1
+kind: ObjectService
+metadata:
+  name: pxobj
+  namespace: pxobj-system
+spec:
+  replicas: 3
+  storageClassName: px-repl3
+  volumeSize: 100Gi
+  serviceType: ClusterIP
+  port: 9000
+  # optional: if omitted, operator auto-generates and rotates self-signed certs
+  # tlsSecretName: pxobj-tls
+  # optional cert-manager integration
+  # useCertManager: true
+  # issuerRefName: pxobj-ca-issuer
+  # issuerRefKind: Issuer
+  # issuerRefGroup: cert-manager.io
+  dataPath: /data

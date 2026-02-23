@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pxobj-system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pxobj-operator
+  namespace: pxobj-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pxobj-operator
+  template:
+    metadata:
+      labels:
+        app: pxobj-operator
+    spec:
+      serviceAccountName: pxobj-operator
+      containers:
+      - name: operator
+        image: ghcr.io/mchenetz/pxobj:latest
+        imagePullPolicy: IfNotPresent
+        command: ["/pxobj-operator"]
+        env:
+        - name: PXOBJ_IMAGE
+          value: ghcr.io/mchenetz/pxobj:latest
+        ports:
+        - containerPort: 8080
+          name: metrics
+        - containerPort: 8081
+          name: probes
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: probes
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: probes
+          initialDelaySeconds: 5
+          periodSeconds: 10

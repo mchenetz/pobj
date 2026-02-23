@@ -1,0 +1,15 @@
+apiVersion: v2
+name: pxobj
+description: COSI-compliant S3 object service operator and clustered object backend
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+- cosi
+- s3
+- object-storage
+- operator
+- kubernetes
+home: https://github.com/mchenetz/pxobj
+sources:
+- https://github.com/mchenetz/pxobj

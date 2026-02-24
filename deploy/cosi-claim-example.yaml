@@ -4,7 +4,7 @@ metadata:
   name: app-bucket
   namespace: default
 spec:
-  bucketClassName: pxobj-s3
+  bucketClassName: entity-s3
   protocols:
   - S3
 ---
@@ -15,6 +15,6 @@ metadata:
   namespace: default
 spec:
   bucketClaimName: app-bucket
-  bucketAccessClassName: pxobj-s3-access
+  bucketAccessClassName: entity-s3-access
   credentialsSecretName: app-bucket-credentials
   protocol: S3

@@ -2,12 +2,12 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "pxobj.fullname" . }}-operator
+  name: {{ include "entity.fullname" . }}-operator
 rules:
-- apiGroups: ["pxobj.io"]
+- apiGroups: ["entity.io"]
   resources: ["objectservices"]
   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-- apiGroups: ["pxobj.io"]
+- apiGroups: ["entity.io"]
   resources: ["objectservices/status", "objectservices/finalizers"]
   verbs: ["get", "update", "patch"]
 - apiGroups: [""]
@@ -29,11 +29,11 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "pxobj.fullname" . }}-operator
+  name: {{ include "entity.fullname" . }}-operator
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ include "pxobj.fullname" . }}-operator
+  name: {{ include "entity.fullname" . }}-operator
 subjects:
 - kind: ServiceAccount
   name: {{ .Values.serviceAccount.operator }}
@@ -42,7 +42,7 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "pxobj.fullname" . }}-cosi-driver
+  name: {{ include "entity.fullname" . }}-cosi-driver
 rules:
 - apiGroups: ["objectstorage.k8s.io"]
   resources: ["buckets", "bucketclaims", "bucketclasses", "bucketaccesses", "bucketaccessclasses"]
@@ -60,11 +60,11 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "pxobj.fullname" . }}-cosi-driver
+  name: {{ include "entity.fullname" . }}-cosi-driver
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ include "pxobj.fullname" . }}-cosi-driver
+  name: {{ include "entity.fullname" . }}-cosi-driver
 subjects:
 - kind: ServiceAccount
   name: {{ .Values.serviceAccount.cosiDriver }}

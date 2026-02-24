@@ -74,7 +74,7 @@ func (c *Cluster) Enabled() bool    { return c.cfg.Replicas > 1 }
 func (c *Cluster) SelfOrdinal() int { return c.ordinal }
 
 func (c *Cluster) IsInternalReplication(r *http.Request) bool {
-	return r.Header.Get("X-PXOBJ-Internal-Replication") == "true"
+	return r.Header.Get("X-ENTITY-Internal-Replication") == "true"
 }
 
 func (c *Cluster) Leader(ctx context.Context) (int, string) {
@@ -134,7 +134,7 @@ func (c *Cluster) Replicate(ctx context.Context, method, path string, headers ma
 			continue
 		}
 		req.Header.Set("Authorization", "Bearer "+c.cfg.Token)
-		req.Header.Set("X-PXOBJ-Internal-Replication", "true")
+		req.Header.Set("X-ENTITY-Internal-Replication", "true")
 		for k, v := range headers {
 			req.Header.Set(k, v)
 		}

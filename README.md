@@ -1,6 +1,6 @@
-# pobj
+# entity
 
-`pobj` is a full custom COSI-compliant S3 object service for Kubernetes, implemented without MinIO.
+`entity` is a full custom COSI-compliant S3 object service for Kubernetes, implemented without MinIO.
 
 Full user documentation (installation, order of operations, TLS modes, scaling, examples):
 - [docs/USER_GUIDE.md](docs/USER_GUIDE.md)
@@ -9,12 +9,12 @@ CI/release workflow:
 - [build-release.yml](.github/workflows/build-release.yml)
 
 Helm chart:
-- [charts/pxobj](charts/pxobj)
+- [charts/entity](charts/entity)
 
 Prebuilt Helm chart (GHCR OCI):
-- `oci://ghcr.io/mchenetz/charts/pxobj`
+- `oci://ghcr.io/mchenetz/charts/entity`
 
-![pobj architecture infographic](docs/pxobj-infographic.svg)
+![entity architecture infographic](docs/entity-infographic.svg)
 
 ## What this includes
 
@@ -50,7 +50,7 @@ Every object server pod uses a dedicated PVC from that class.
 
 ```bash
 go build ./...
-make docker-build IMAGE=ghcr.io/mchenetz/pxobj:latest
+make docker-build IMAGE=ghcr.io/mchenetz/entity:latest
 ```
 
 ## Deploy
@@ -78,18 +78,18 @@ echo <GITHUB_TOKEN> | helm registry login ghcr.io -u <GITHUB_USERNAME> --passwor
 Install directly from registry:
 
 ```bash
-helm upgrade --install pxobj oci://ghcr.io/mchenetz/charts/pxobj \
+helm upgrade --install entity oci://ghcr.io/mchenetz/charts/entity \
   --version 0.1.0 \
-  --namespace pxobj-system --create-namespace
+  --namespace entity-system --create-namespace
 ```
 
 Install and create ObjectService + COSI classes:
 
 ```bash
-helm upgrade --install pxobj oci://ghcr.io/mchenetz/charts/pxobj \
+helm upgrade --install entity oci://ghcr.io/mchenetz/charts/entity \
   --version 0.1.0 \
-  --namespace pxobj-system --create-namespace \
-  --set image.repository=ghcr.io/mchenetz/pxobj \
+  --namespace entity-system --create-namespace \
+  --set image.repository=ghcr.io/mchenetz/entity \
   --set image.tag=latest \
   --set objectService.create=true \
   --set objectService.storageClassName=px-repl3 \
@@ -99,9 +99,9 @@ helm upgrade --install pxobj oci://ghcr.io/mchenetz/charts/pxobj \
 Optional: pull chart locally first:
 
 ```bash
-helm pull oci://ghcr.io/mchenetz/charts/pxobj --version 0.1.0
-tar -xzf pxobj-0.1.0.tgz
-helm upgrade --install pxobj ./pxobj --namespace pxobj-system --create-namespace
+helm pull oci://ghcr.io/mchenetz/charts/entity --version 0.1.0
+tar -xzf entity-0.1.0.tgz
+helm upgrade --install entity ./entity --namespace entity-system --create-namespace
 ```
 
 ## End-to-end test on Kind
@@ -113,9 +113,9 @@ make e2e-kind
 ```
 
 Optional environment overrides:
-- `KIND_CLUSTER_NAME` (default `pxobj-e2e`)
+- `KIND_CLUSTER_NAME` (default `entity-e2e`)
 - `KIND_RECREATE_CLUSTER` (default `true`)
-- `PXOBJ_IMAGE` (default `pxobj:e2e`)
+- `ENTITY_IMAGE` (default `entity:e2e`)
 - `AWSCLI_IMAGE` (default `amazon/aws-cli:2.17.56`)
 
 ## Certificate modes

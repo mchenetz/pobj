@@ -8,7 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/mchenetz/pxobj/internal/cosi"
+	"github.com/mchenetz/entity/internal/cosi"
 	cosictrl "sigs.k8s.io/container-object-storage-interface-api/controller"
 )
 
@@ -17,19 +17,19 @@ func main() {
 	var lockName string
 	var threads int
 	flag.StringVar(&identity, "identity", os.Getenv("POD_NAME"), "leader identity")
-	flag.StringVar(&lockName, "leader-lock", "pxobj-cosi", "leader lock name")
+	flag.StringVar(&lockName, "leader-lock", "entity-cosi", "leader lock name")
 	flag.IntVar(&threads, "threads", 4, "worker threads")
 	flag.Parse()
 
-	driverName := env("PXOBJ_DRIVER_NAME", "pxobj.io/s3")
-	endpoint := env("PXOBJ_S3_ENDPOINT", "pxobj.default.svc.cluster.local:9000")
-	region := env("PXOBJ_S3_REGION", "us-east-1")
-	s3CAPEM := os.Getenv("PXOBJ_S3_CA_PEM")
-	adminURL := env("PXOBJ_ADMIN_URL", "https://pxobj.default.svc.cluster.local:19000")
-	adminCAPEM := os.Getenv("PXOBJ_ADMIN_CA_PEM")
-	adminToken := os.Getenv("PXOBJ_ADMIN_TOKEN")
+	driverName := env("ENTITY_DRIVER_NAME", "entity.io/s3")
+	endpoint := env("ENTITY_S3_ENDPOINT", "entity.default.svc.cluster.local:9000")
+	region := env("ENTITY_S3_REGION", "us-east-1")
+	s3CAPEM := os.Getenv("ENTITY_S3_CA_PEM")
+	adminURL := env("ENTITY_ADMIN_URL", "https://entity.default.svc.cluster.local:19000")
+	adminCAPEM := os.Getenv("ENTITY_ADMIN_CA_PEM")
+	adminToken := os.Getenv("ENTITY_ADMIN_TOKEN")
 	if adminToken == "" {
-		log.Fatal("PXOBJ_ADMIN_TOKEN is required")
+		log.Fatal("ENTITY_ADMIN_TOKEN is required")
 	}
 
 	admin := cosi.NewAdminClient(adminURL, adminToken, adminCAPEM)

@@ -1,5 +1,5 @@
 {{- if .Values.objectService.create }}
-apiVersion: pxobj.io/v1alpha1
+apiVersion: entity.io/v1alpha1
 kind: ObjectService
 metadata:
   name: {{ .Values.objectService.name }}

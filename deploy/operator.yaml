@@ -1,32 +1,32 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: pxobj-system
+  name: entity-system
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pxobj-operator
-  namespace: pxobj-system
+  name: entity-operator
+  namespace: entity-system
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: pxobj-operator
+      app: entity-operator
   template:
     metadata:
       labels:
-        app: pxobj-operator
+        app: entity-operator
     spec:
-      serviceAccountName: pxobj-operator
+      serviceAccountName: entity-operator
       containers:
       - name: operator
-        image: ghcr.io/mchenetz/pxobj:latest
+        image: ghcr.io/mchenetz/entity:latest
         imagePullPolicy: IfNotPresent
-        command: ["/pxobj-operator"]
+        command: ["/entity-operator"]
         env:
-        - name: PXOBJ_IMAGE
-          value: ghcr.io/mchenetz/pxobj:latest
+        - name: ENTITY_IMAGE
+          value: ghcr.io/mchenetz/entity:latest
         ports:
         - containerPort: 8080
           name: metrics

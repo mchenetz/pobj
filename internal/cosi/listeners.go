@@ -182,7 +182,7 @@ func claimBucketName(bc *objv1.BucketClaim) string {
 	}
 	out = strings.Trim(out, "-")
 	if len(out) < 3 {
-		out = out + "-pxobj"
+		out = out + "-entity"
 	}
 	return out
 }

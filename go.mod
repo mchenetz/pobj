@@ -1,4 +1,4 @@
-module github.com/mchenetz/pxobj
+module github.com/mchenetz/entity
 
 go 1.24.0
 

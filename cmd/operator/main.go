@@ -12,8 +12,8 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 
-	pxv1 "github.com/mchenetz/pxobj/api/v1alpha1"
-	"github.com/mchenetz/pxobj/controllers"
+	pxv1 "github.com/mchenetz/entity/api/v1alpha1"
+	"github.com/mchenetz/entity/controllers"
 )
 
 func main() {
@@ -36,15 +36,15 @@ func main() {
 		MetricsBindAddress:     metricsAddr,
 		HealthProbeBindAddress: probeAddr,
 		LeaderElection:         enableLeaderElection,
-		LeaderElectionID:       "pxobj-operator-lock",
+		LeaderElectionID:       "entity-operator-lock",
 	})
 	if err != nil {
 		os.Exit(1)
 	}
 
-	img := os.Getenv("PXOBJ_IMAGE")
+	img := os.Getenv("ENTITY_IMAGE")
 	if img == "" {
-		img = "ghcr.io/mchenetz/pxobj:latest"
+		img = "ghcr.io/mchenetz/entity:latest"
 	}
 	if err := (&controllers.ObjectServiceReconciler{
 		Client:        mgr.GetClient(),

@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/mchenetz/pxobj/internal/cluster"
-	"github.com/mchenetz/pxobj/internal/objectd"
+	"github.com/mchenetz/entity/internal/cluster"
+	"github.com/mchenetz/entity/internal/objectd"
 )
 
 type Handler struct {

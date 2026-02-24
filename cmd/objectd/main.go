@@ -12,31 +12,31 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/mchenetz/pxobj/internal/admin"
-	"github.com/mchenetz/pxobj/internal/cluster"
-	"github.com/mchenetz/pxobj/internal/objectd"
-	"github.com/mchenetz/pxobj/internal/s3"
+	"github.com/mchenetz/entity/internal/admin"
+	"github.com/mchenetz/entity/internal/cluster"
+	"github.com/mchenetz/entity/internal/objectd"
+	"github.com/mchenetz/entity/internal/s3"
 )
 
 func main() {
-	dataDir := getEnv("PXOBJ_DATA_DIR", "/data")
-	s3Port := getEnv("PXOBJ_S3_PORT", "9000")
-	adminPort := getEnv("PXOBJ_ADMIN_PORT", "19000")
-	adminToken := os.Getenv("PXOBJ_ADMIN_TOKEN")
+	dataDir := getEnv("ENTITY_DATA_DIR", "/data")
+	s3Port := getEnv("ENTITY_S3_PORT", "9000")
+	adminPort := getEnv("ENTITY_ADMIN_PORT", "19000")
+	adminToken := os.Getenv("ENTITY_ADMIN_TOKEN")
 	if adminToken == "" {
-		log.Fatal("PXOBJ_ADMIN_TOKEN must be set")
+		log.Fatal("ENTITY_ADMIN_TOKEN must be set")
 	}
-	tlsEnabled := strings.EqualFold(getEnv("PXOBJ_TLS_ENABLED", "false"), "true")
-	certFile := os.Getenv("PXOBJ_TLS_CERT_FILE")
-	keyFile := os.Getenv("PXOBJ_TLS_KEY_FILE")
-	caFile := os.Getenv("PXOBJ_TLS_CA_FILE")
+	tlsEnabled := strings.EqualFold(getEnv("ENTITY_TLS_ENABLED", "false"), "true")
+	certFile := os.Getenv("ENTITY_TLS_CERT_FILE")
+	keyFile := os.Getenv("ENTITY_TLS_KEY_FILE")
+	caFile := os.Getenv("ENTITY_TLS_CA_FILE")
 
 	clusterCfg := cluster.Config{
 		PodName:      os.Getenv("POD_NAME"),
 		Namespace:    getEnv("POD_NAMESPACE", "default"),
-		Name:         getEnv("PXOBJ_SERVICE_NAME", "pxobj"),
-		HeadlessName: getEnv("PXOBJ_HEADLESS_SERVICE_NAME", "pxobj-headless"),
-		Replicas:     atoiDefault(os.Getenv("PXOBJ_REPLICAS"), 1),
+		Name:         getEnv("ENTITY_SERVICE_NAME", "entity"),
+		HeadlessName: getEnv("ENTITY_HEADLESS_SERVICE_NAME", "entity-headless"),
+		Replicas:     atoiDefault(os.Getenv("ENTITY_REPLICAS"), 1),
 		S3Port:       atoiDefault(s3Port, 9000),
 		AdminPort:    atoiDefault(adminPort, 19000),
 		Token:        adminToken,

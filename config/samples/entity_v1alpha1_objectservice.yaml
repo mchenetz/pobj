@@ -1,8 +1,8 @@
-apiVersion: pxobj.io/v1alpha1
+apiVersion: entity.io/v1alpha1
 kind: ObjectService
 metadata:
-  name: pxobj
-  namespace: pxobj-system
+  name: entity
+  namespace: entity-system
 spec:
   replicas: 3
   storageClassName: px-repl3
@@ -10,10 +10,10 @@ spec:
   serviceType: ClusterIP
   port: 9000
   # optional: if omitted, operator auto-generates and rotates self-signed certs
-  # tlsSecretName: pxobj-tls
+  # tlsSecretName: entity-tls
   # optional cert-manager integration
   # useCertManager: true
-  # issuerRefName: pxobj-ca-issuer
+  # issuerRefName: entity-ca-issuer
   # issuerRefKind: Issuer
   # issuerRefGroup: cert-manager.io
   dataPath: /data

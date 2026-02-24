@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	GroupVersion = schema.GroupVersion{Group: "pxobj.io", Version: "v1alpha1"}
+	GroupVersion = schema.GroupVersion{Group: "entity.io", Version: "v1alpha1"}
 	SchemeBuilder = runtime.NewSchemeBuilder(addKnownTypes)
 	AddToScheme = SchemeBuilder.AddToScheme
 )

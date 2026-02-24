@@ -1,8 +1,8 @@
-pxobj has been installed.
+entity has been installed.
 
 Next steps:
 1. Verify operator:
-   kubectl -n {{ .Release.Namespace }} get deploy {{ include "pxobj.fullname" . }}-operator
+   kubectl -n {{ .Release.Namespace }} get deploy {{ include "entity.fullname" . }}-operator
 
 2. If objectService.create=false, create an ObjectService manually.
 

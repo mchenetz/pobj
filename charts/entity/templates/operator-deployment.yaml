@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "pxobj.fullname" . }}-operator
+  name: {{ include "entity.fullname" . }}-operator
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.operator.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "pxobj.fullname" . }}-operator
+      app: {{ include "entity.fullname" . }}-operator
   template:
     metadata:
       labels:
-        app: {{ include "pxobj.fullname" . }}-operator
+        app: {{ include "entity.fullname" . }}-operator
     spec:
       serviceAccountName: {{ .Values.serviceAccount.operator }}
       containers:
       - name: operator
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: ["/pxobj-operator"]
+        command: ["/entity-operator"]
         env:
-        - name: PXOBJ_IMAGE
+        - name: ENTITY_IMAGE
           value: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         ports:
         - containerPort: 8080

@@ -12,7 +12,7 @@ import (
 	"math/big"
 	"time"
 
-	pxv1 "github.com/mchenetz/pxobj/api/v1alpha1"
+	pxv1 "github.com/mchenetz/entity/api/v1alpha1"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -205,11 +205,11 @@ func (r *ObjectServiceReconciler) createOrRotateSelfSignedTLSSecret(ctx context.
 		fmt.Sprintf("%s.%s.svc.cluster.local", obj.Name, obj.Namespace),
 		fmt.Sprintf("*.%s.%s.svc.cluster.local", headless, obj.Namespace),
 	}
-	caCrtPEM, caKeyPEM, err := newCA(obj.Name + "-pxobj-ca")
+	caCrtPEM, caKeyPEM, err := newCA(obj.Name + "-entity-ca")
 	if err != nil {
 		return err
 	}
-	certPEM, keyPEM, err := newLeafCert(obj.Name+"-pxobj", dns, caCrtPEM, caKeyPEM)
+	certPEM, keyPEM, err := newLeafCert(obj.Name+"-entity", dns, caCrtPEM, caKeyPEM)
 	if err != nil {
 		return err
 	}
@@ -408,7 +408,7 @@ func (r *ObjectServiceReconciler) ensureStatefulSet(ctx context.Context, obj *px
 	replicas := obj.Spec.Replicas
 	mountPath := obj.Spec.DataPath
 	headless := obj.Name + "-headless"
-	tlsDir := "/etc/pxobj/tls"
+	tlsDir := "/etc/entity/tls"
 
 	template := appsv1.StatefulSet{
 		ObjectMeta: metav1.ObjectMeta{Name: obj.Name, Namespace: obj.Namespace},
@@ -422,22 +422,22 @@ func (r *ObjectServiceReconciler) ensureStatefulSet(ctx context.Context, obj *px
 					Containers: []corev1.Container{{
 						Name:    "objectd",
 						Image:   r.OperatorImage,
-						Command: []string{"/pxobj-objectd"},
+						Command: []string{"/entity-objectd"},
 						Ports:   []corev1.ContainerPort{{ContainerPort: obj.Spec.Port, Name: "s3"}, {ContainerPort: 19000, Name: "admin"}},
 						Env: []corev1.EnvVar{
-							{Name: "PXOBJ_DATA_DIR", Value: mountPath},
-							{Name: "PXOBJ_S3_PORT", Value: fmt.Sprintf("%d", obj.Spec.Port)},
-							{Name: "PXOBJ_ADMIN_PORT", Value: "19000"},
-							{Name: "PXOBJ_SERVICE_NAME", Value: obj.Name},
-							{Name: "PXOBJ_HEADLESS_SERVICE_NAME", Value: headless},
-							{Name: "PXOBJ_REPLICAS", Value: fmt.Sprintf("%d", obj.Spec.Replicas)},
+							{Name: "ENTITY_DATA_DIR", Value: mountPath},
+							{Name: "ENTITY_S3_PORT", Value: fmt.Sprintf("%d", obj.Spec.Port)},
+							{Name: "ENTITY_ADMIN_PORT", Value: "19000"},
+							{Name: "ENTITY_SERVICE_NAME", Value: obj.Name},
+							{Name: "ENTITY_HEADLESS_SERVICE_NAME", Value: headless},
+							{Name: "ENTITY_REPLICAS", Value: fmt.Sprintf("%d", obj.Spec.Replicas)},
 							{Name: "POD_NAME", ValueFrom: &corev1.EnvVarSource{FieldRef: &corev1.ObjectFieldSelector{FieldPath: "metadata.name"}}},
 							{Name: "POD_NAMESPACE", ValueFrom: &corev1.EnvVarSource{FieldRef: &corev1.ObjectFieldSelector{FieldPath: "metadata.namespace"}}},
-							{Name: "PXOBJ_TLS_ENABLED", Value: "true"},
-							{Name: "PXOBJ_TLS_CERT_FILE", Value: tlsDir + "/tls.crt"},
-							{Name: "PXOBJ_TLS_KEY_FILE", Value: tlsDir + "/tls.key"},
-							{Name: "PXOBJ_TLS_CA_FILE", Value: tlsDir + "/ca.crt"},
-							{Name: "PXOBJ_ADMIN_TOKEN", ValueFrom: &corev1.EnvVarSource{SecretKeyRef: &corev1.SecretKeySelector{LocalObjectReference: corev1.LocalObjectReference{Name: obj.Spec.AdminSecretName}, Key: "adminToken"}}},
+							{Name: "ENTITY_TLS_ENABLED", Value: "true"},
+							{Name: "ENTITY_TLS_CERT_FILE", Value: tlsDir + "/tls.crt"},
+							{Name: "ENTITY_TLS_KEY_FILE", Value: tlsDir + "/tls.key"},
+							{Name: "ENTITY_TLS_CA_FILE", Value: tlsDir + "/ca.crt"},
+							{Name: "ENTITY_ADMIN_TOKEN", ValueFrom: &corev1.EnvVarSource{SecretKeyRef: &corev1.SecretKeySelector{LocalObjectReference: corev1.LocalObjectReference{Name: obj.Spec.AdminSecretName}, Key: "adminToken"}}},
 						},
 						VolumeMounts: []corev1.VolumeMount{
 							{Name: "data", MountPath: mountPath},
@@ -496,19 +496,19 @@ func (r *ObjectServiceReconciler) ensureCOSIDeployment(ctx context.Context, obj 
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{Labels: labels},
 				Spec: corev1.PodSpec{
-					ServiceAccountName: "pxobj-cosi-driver",
+					ServiceAccountName: "entity-cosi-driver",
 					Containers: []corev1.Container{{
 						Name:    "cosidriver",
 						Image:   r.OperatorImage,
-						Command: []string{"/pxobj-cosidriver"},
+						Command: []string{"/entity-cosidriver"},
 						Env: []corev1.EnvVar{
-							{Name: "PXOBJ_DRIVER_NAME", Value: "pxobj.io/s3"},
-							{Name: "PXOBJ_S3_ENDPOINT", Value: endpoint},
-							{Name: "PXOBJ_S3_REGION", Value: "us-east-1"},
-							{Name: "PXOBJ_S3_CA_PEM", ValueFrom: &corev1.EnvVarSource{SecretKeyRef: &corev1.SecretKeySelector{LocalObjectReference: corev1.LocalObjectReference{Name: obj.Spec.TLSSecretName}, Key: "ca.crt"}}},
-							{Name: "PXOBJ_ADMIN_URL", Value: adminURL},
-							{Name: "PXOBJ_ADMIN_CA_PEM", ValueFrom: &corev1.EnvVarSource{SecretKeyRef: &corev1.SecretKeySelector{LocalObjectReference: corev1.LocalObjectReference{Name: obj.Spec.TLSSecretName}, Key: "ca.crt"}}},
-							{Name: "PXOBJ_ADMIN_TOKEN", ValueFrom: &corev1.EnvVarSource{SecretKeyRef: &corev1.SecretKeySelector{LocalObjectReference: corev1.LocalObjectReference{Name: obj.Spec.AdminSecretName}, Key: "adminToken"}}},
+							{Name: "ENTITY_DRIVER_NAME", Value: "entity.io/s3"},
+							{Name: "ENTITY_S3_ENDPOINT", Value: endpoint},
+							{Name: "ENTITY_S3_REGION", Value: "us-east-1"},
+							{Name: "ENTITY_S3_CA_PEM", ValueFrom: &corev1.EnvVarSource{SecretKeyRef: &corev1.SecretKeySelector{LocalObjectReference: corev1.LocalObjectReference{Name: obj.Spec.TLSSecretName}, Key: "ca.crt"}}},
+							{Name: "ENTITY_ADMIN_URL", Value: adminURL},
+							{Name: "ENTITY_ADMIN_CA_PEM", ValueFrom: &corev1.EnvVarSource{SecretKeyRef: &corev1.SecretKeySelector{LocalObjectReference: corev1.LocalObjectReference{Name: obj.Spec.TLSSecretName}, Key: "ca.crt"}}},
+							{Name: "ENTITY_ADMIN_TOKEN", ValueFrom: &corev1.EnvVarSource{SecretKeyRef: &corev1.SecretKeySelector{LocalObjectReference: corev1.LocalObjectReference{Name: obj.Spec.AdminSecretName}, Key: "adminToken"}}},
 							{Name: "POD_NAME", ValueFrom: &corev1.EnvVarSource{FieldRef: &corev1.ObjectFieldSelector{FieldPath: "metadata.name"}}},
 							{Name: "POD_NAMESPACE", ValueFrom: &corev1.EnvVarSource{FieldRef: &corev1.ObjectFieldSelector{FieldPath: "metadata.namespace"}}},
 						},

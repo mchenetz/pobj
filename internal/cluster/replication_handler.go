@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/mchenetz/pxobj/internal/objectd"
+	"github.com/mchenetz/entity/internal/objectd"
 )
 
 type ReplicationHandler struct {
@@ -28,7 +28,7 @@ func (h *ReplicationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write([]byte("ok"))
 		return
 	}
-	if r.Header.Get("X-PXOBJ-Internal-Replication") != "true" {
+	if r.Header.Get("X-ENTITY-Internal-Replication") != "true" {
 		http.Error(w, "forbidden", http.StatusForbidden)
 		return
 	}

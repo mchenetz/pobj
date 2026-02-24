@@ -1,6 +1,6 @@
 # pobj
 
-`pxobj` is a full custom COSI-compliant S3 object service for Kubernetes, implemented without MinIO.
+`pobj` is a full custom COSI-compliant S3 object service for Kubernetes, implemented without MinIO.
 
 Full user documentation (installation, order of operations, TLS modes, scaling, examples):
 - [docs/USER_GUIDE.md](docs/USER_GUIDE.md)

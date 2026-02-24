@@ -14,7 +14,7 @@ Helm chart:
 Prebuilt Helm chart (GHCR OCI):
 - `oci://ghcr.io/mchenetz/charts/pxobj`
 
-![pxobj architecture infographic](docs/pxobj-infographic.svg)
+![pobj architecture infographic](docs/pxobj-infographic.svg)
 
 ## What this includes
 

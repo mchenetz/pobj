@@ -158,3 +158,21 @@ kubectl -n default get secret app-bucket-credentials -o yaml
 - Current S3 protocol support targets core bucket/object workflows used by workloads and COSI lifecycles.
 - Credentials are protocol `S3`, auth `Key`, and are bucket-scoped.
 - Multi-replica clustering is supported; set `spec.replicas` > 1.
+
+## Project Docs
+
+- [CONTRIBUTING.md](CONTRIBUTING.md)
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+- [SECURITY.md](SECURITY.md)
+- [SUPPORT.md](SUPPORT.md)
+- [CHANGELOG.md](CHANGELOG.md)
+- [GOVERNANCE.md](GOVERNANCE.md)
+- [MAINTAINERS.md](MAINTAINERS.md)
+
+## License
+
+This project is licensed under **AGPL-3.0-only**.
+
+- [LICENSE](LICENSE)
+- [NOTICE](NOTICE)
+- [docs/LICENSING.md](docs/LICENSING.md)

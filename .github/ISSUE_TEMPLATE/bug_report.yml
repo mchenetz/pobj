@@ -1,0 +1,36 @@
+name: Bug Report
+description: Report a reproducible defect
+labels: [bug]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Describe the issue and expected behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps To Reproduce
+      description: Provide exact commands/manifests and sequence.
+      placeholder: |
+        1. Apply ...
+        2. Create ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Kubernetes version, distro, storage class, image tag, and relevant tooling versions.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs And Output
+      description: Relevant operator/objectd/cosi logs and kubectl output.
+    validations:
+      required: true
